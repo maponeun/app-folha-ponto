@@ -14,18 +14,20 @@ import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from 'firebase/auth';
 
 // --- Configuração do Firebase ---
-const firebaseConfig = typeof __firebase_config !== 'undefined' 
-    ? JSON.parse(__firebase_config) 
-    : {
-        apiKey: import.meta.env.VITE_API_KEY,
-        authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-        projectId: import.meta.env.VITE_PROJECT_ID,
-        storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-        messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.VITE_APP_ID
-      };
+const firebaseConfig = {
+    apiKey: import.meta.env.VITE_API_KEY,
+    authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_ID
+};
 
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+const appId = 'default-app-id'; // No ambiente de produção, este valor não é usado.
+
+// --- O resto do código permanece exatamente o mesmo ---
+
+// (O restante do seu código App.jsx vai aqui, sem nenhuma outra alteração)
 
 // --- Inicialização do Firebase ---
 let app, db, auth;
