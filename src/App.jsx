@@ -13,7 +13,8 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from 'firebase/auth';
 
-// --- Configuração do Firebase ---
+// --- Configuração do Firebase (VERSÃO PARA VERCEL) ---
+// Este código lê as chaves que você configurou no site da Vercel.
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_API_KEY,
     authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -23,11 +24,7 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_APP_ID
 };
 
-const appId = 'default-app-id'; // No ambiente de produção, este valor não é usado.
-
-// --- O resto do código permanece exatamente o mesmo ---
-
-// (O restante do seu código App.jsx vai aqui, sem nenhuma outra alteração)
+const appId = import.meta.env.VITE_PROJECT_ID || 'default-app-id';
 
 // --- Inicialização do Firebase ---
 let app, db, auth;
@@ -77,7 +74,7 @@ const generatePdf = async (data) => {
         doc.addImage(logoBase64, 'PNG', 10, 8, 22, 22);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10);
-        doc.text('SECRETARIA DE EDUCAÇÃO E ESPORTES | GERÊNCIA GERAL DE TRANSPORTES', pageWidth / 2, 15, { align: 'center' });
+        doc.text('SECRETARIA DE EDUCAÇÃO E ESPORTES | GERÊNCIA GERAL DE TRANSPORTE', pageWidth / 2, 15, { align: 'center' });
         doc.setFontSize(12);
         doc.text('FOLHA DE PONTO INDIVIDUAL', pageWidth / 2, 22, { align: 'center' });
 
@@ -276,11 +273,8 @@ export default function App() {
                 setUserId(user.uid);
             } else {
                 try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
+                    // No ambiente de produção (Vercel), ele sempre tentará o login anônimo.
+                    await signInAnonymously(auth);
                 } catch (error) {
                     console.error("Erro no login:", error);
                     setNotification({ show: true, message: 'Falha na autenticação.', type: 'error' });
