@@ -5,7 +5,7 @@ import {
     LucideClock, LucideCalendar, LucideUser, LucideFileText, 
     LucideBriefcase, LucideRoute, LucideDownload, LucideSave, 
     LucideXCircle, LucideCheckCircle, LucideAlertTriangle, LucideWifiOff,
-    LucideLink // Ícone para Vínculo
+    LucideLink
 } from 'lucide-react';
 
 // Firebase Imports
@@ -14,6 +14,7 @@ import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from 'firebase/auth';
 
 // --- Configuração do Firebase ---
+// **CORREÇÃO**: Removida a referência a `import.meta.env` para garantir compatibilidade com o ambiente.
 const firebaseConfig = typeof __firebase_config !== 'undefined' 
     ? JSON.parse(__firebase_config) 
     : {};
@@ -133,7 +134,7 @@ const generatePdf = async (data) => {
                 doc.setFontSize(9);
                 doc.setTextColor(255, 255, 255);
                 doc.setFont('helvetica', 'bold');
-                doc.text('SECRETARIA DE EDUCAÇÃO E ESPORTE', pageWidth / 2, footerY + 7, { align: 'center' });
+                doc.text('SECRETARIA DE EDUCAÇÃO E ESPORTES', pageWidth / 2, footerY + 7, { align: 'center' });
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(8);
                 doc.text('Avenida Cícero José Dutra, Petrópolis, Caruaru - PE - CEP 55030-580', pageWidth / 2, footerY + 12, { align: 'center' });
@@ -540,5 +541,3 @@ export default function App() {
         </div>
     );
 }
-
-
