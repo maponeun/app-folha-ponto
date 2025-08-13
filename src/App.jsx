@@ -13,18 +13,23 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from 'firebase/auth';
 
-// --- Configuração do Firebase (VERSÃO PARA VERCEL) ---
-// Este código lê as chaves que você configurou no site da Vercel.
-const firebaseConfig = {
-    apiKey: import.meta.env.VITE_API_KEY,
-    authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_APP_ID
-};
+// --- Configuração do Firebase (VERSÃO HÍBRIDA E DEFINITIVA) ---
+// Este código lê as chaves da Vercel (import.meta.env) quando online,
+// e as chaves do Canvas (__firebase_config) quando em desenvolvimento.
+const firebaseConfig = typeof __firebase_config !== 'undefined' 
+    ? JSON.parse(__firebase_config) 
+    : {
+        apiKey: import.meta.env.VITE_API_KEY,
+        authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+        projectId: import.meta.env.VITE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_APP_ID
+      };
 
-const appId = import.meta.env.VITE_PROJECT_ID || 'default-app-id';
+const appId = typeof __app_id !== 'undefined' 
+    ? __app_id 
+    : (import.meta.env.VITE_PROJECT_ID || 'default-app-id');
 
 // --- Inicialização do Firebase ---
 let app, db, auth;
@@ -273,8 +278,11 @@ export default function App() {
                 setUserId(user.uid);
             } else {
                 try {
-                    // No ambiente de produção (Vercel), ele sempre tentará o login anônimo.
-                    await signInAnonymously(auth);
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
                 } catch (error) {
                     console.error("Erro no login:", error);
                     setNotification({ show: true, message: 'Falha na autenticação.', type: 'error' });
