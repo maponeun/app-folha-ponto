@@ -14,10 +14,16 @@ import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from 'firebase/auth';
 
 // --- Configuração do Firebase ---
-// **CORREÇÃO**: Removida a referência a `import.meta.env` para garantir compatibilidade com o ambiente.
 const firebaseConfig = typeof __firebase_config !== 'undefined' 
     ? JSON.parse(__firebase_config) 
-    : {};
+    : {
+        apiKey: import.meta.env.VITE_API_KEY,
+        authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+        projectId: import.meta.env.VITE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_APP_ID
+      };
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
@@ -69,7 +75,7 @@ const generatePdf = async (data) => {
         doc.addImage(logoBase64, 'PNG', 10, 8, 22, 22);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(10);
-        doc.text('SECRETARIA DE EDUCAÇÃO E ESPORTES | GERÊNCIA GERAL DE TRANSPORTE', pageWidth / 2, 15, { align: 'center' });
+        doc.text('SECRETARIA DE EDUCAÇÃO E ESPORTES | GERÊNCIA GERAL DE TRANSPORTES', pageWidth / 2, 15, { align: 'center' });
         doc.setFontSize(12);
         doc.text('FOLHA DE PONTO INDIVIDUAL', pageWidth / 2, 22, { align: 'center' });
 
